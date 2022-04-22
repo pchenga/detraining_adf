@@ -1,0 +1,42 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "detraining-azuredatafactory"
+		},
+		"LS_AzureBlobStorage_connectionString": {
+			"value": ""
+		},
+		"LS_AzureDataLakeStorage_accountKey": {
+			"value": ""
+		},
+		"LS_AzureMySql1_connectionString": {
+			"value": ""
+		},
+		"LS_AzureSqlDatabase_connectionString": {
+			"value": ""
+		},
+		"LS_AzureSqlDatabase2_connectionString": {
+			"value": ""
+		},
+		"LS_AzureDataLakeStorage_properties_typeProperties_url": {
+			"value": "https://detrainingadlsgen2.dfs.core.windows.net"
+		},
+		"LS_AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "https://detraining-kv.vault.azure.net/"
+		},
+		"trigger1_properties_typeProperties_scope": {
+			"value": "/subscriptions/3f8986df-e15f-49e8-947b-ea197dc4c668/resourceGroups/detraining-rg/providers/Microsoft.Storage/storageAccounts/detrainingadlsgen2"
+		},
+		"trigger3_properties_typeProperties_scope": {
+			"value": "/subscriptions/3f8986df-e15f-49e8-947b-ea197dc4c668/resourceGroups/detraining-rg/providers/Microsoft.Storage/storageAccounts/detrainingadlsgen2"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
