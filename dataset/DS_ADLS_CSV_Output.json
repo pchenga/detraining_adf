@@ -10,7 +10,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "source,csv",
 				"folderPath": "source_output",
 				"fileSystem": "output"
 			},
