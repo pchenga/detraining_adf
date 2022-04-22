@@ -275,8 +275,8 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "emp_data,csv",
-						"folderPath": "emp_output",
+						"fileName": "source,csv",
+						"folderPath": "source_output",
 						"fileSystem": "output"
 					},
 					"columnDelimiter": ",",
