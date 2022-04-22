@@ -1,0 +1,24 @@
+{
+	"name": "trigger_email_notify",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_copy_sql_blob_email_notification",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 2,
+				"startTime": "2022-04-21T02:20:00",
+				"timeZone": "India Standard Time"
+			}
+		}
+	}
+}

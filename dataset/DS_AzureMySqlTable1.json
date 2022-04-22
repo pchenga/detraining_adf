@@ -1,0 +1,38 @@
+{
+	"name": "DS_AzureMySqlTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureMySql1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "demo"
+		},
+		"annotations": [],
+		"type": "AzureMySqlTable",
+		"schema": [
+			{
+				"name": "source_database",
+				"type": "varchar",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "table_schema",
+				"type": "varchar",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "table_name",
+				"type": "varchar",
+				"precision": 0,
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"tableName": "metadata"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

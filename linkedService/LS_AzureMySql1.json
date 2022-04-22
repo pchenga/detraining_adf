@@ -1,0 +1,19 @@
+{
+	"name": "LS_AzureMySql1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureMySql",
+		"typeProperties": {
+			"connectionString": "Server=detrainingmysqlserver.mysql.database.azure.com;Port=3306;Database=metadata;UID=azureadmin@detrainingmysqlserver;SSLMode=1;UseSystemTrustStore=0",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "LS_AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "mysql-pass"
+			}
+		}
+	}
+}

@@ -1,0 +1,25 @@
+{
+	"name": "trigger3",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_event_trigger",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/input/blobs/emp_data/",
+			"blobPathEndsWith": "emp_data.csv",
+			"ignoreEmptyBlobs": false,
+			"scope": "/subscriptions/3f8986df-e15f-49e8-947b-ea197dc4c668/resourceGroups/detraining-rg/providers/Microsoft.Storage/storageAccounts/detrainingadlsgen2",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"name": "detraining-azuredatafactory",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "bca69481-adcf-47d3-acec-337445dc61db",
+		"tenantId": "c1a65655-fc33-4fc6-baf5-81f48245043d"
+	}
+}

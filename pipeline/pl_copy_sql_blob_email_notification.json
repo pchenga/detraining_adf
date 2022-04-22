@@ -1,0 +1,113 @@
+{
+	"name": "pl_copy_sql_blob_email_notification",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copydatafromazuresqltoblob",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_Source_AzureSqlTable",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_BLOB_DelimitedText",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Trigger Logic App",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Copydatafromazuresqltoblob",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-28.centralus.logic.azure.com:443/workflows/da5c3224fcfa449da5f0a66ef3f37fbd/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=zwcel5jFzv6oOxXN2bq5buDW08y3Xn_js0JIXn3hUV8",
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/json"
+					},
+					"body": {
+						"value": "{\n\"ADF Name\": \"@{pipeline().DataFactory}\",\n\"Pipeline Name\": \"@{pipeline().Pipeline}\" ,\n\"Pipeline RunID\": \"@{pipeline().RunId}\",\n\"Error Message\": \"@{activity('Copydatafromazuresqltoblob').error.message}\"\n\n}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Fail1",
+				"type": "Fail",
+				"dependsOn": [
+					{
+						"activity": "Trigger Logic App",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"message": {
+						"value": "@activity('Copydatafromazuresqltoblob').error.message",
+						"type": "Expression"
+					},
+					"errorCode": "2200"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2022-04-20T02:15:41Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
