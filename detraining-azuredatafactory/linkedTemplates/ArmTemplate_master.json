@@ -82,9 +82,6 @@
 					"LS_AzureMySql1_connectionString": {
 						"value": "[parameters('LS_AzureMySql1_connectionString')]"
 					},
-					"LS_AzureSqlDatabase2_connectionString": {
-						"value": "[parameters('LS_AzureSqlDatabase2_connectionString')]"
-					},
 					"LS_AzureDataLakeStorage_properties_typeProperties_url": {
 						"value": "[parameters('LS_AzureDataLakeStorage_properties_typeProperties_url')]"
 					},
@@ -108,6 +105,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"LS_AzureSqlDatabase2_connectionString": {
+						"value": "[parameters('LS_AzureSqlDatabase2_connectionString')]"
 					},
 					"trigger1_properties_typeProperties_scope": {
 						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
