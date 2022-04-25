@@ -108,9 +108,6 @@
 					},
 					"LS_AzureSqlDatabase2_connectionString": {
 						"value": "[parameters('LS_AzureSqlDatabase2_connectionString')]"
-					},
-					"trigger1_properties_typeProperties_scope": {
-						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
 					}
 				}
 			},
@@ -131,6 +128,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"trigger1_properties_typeProperties_scope": {
+						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
 					},
 					"trigger3_properties_typeProperties_scope": {
 						"value": "[parameters('trigger3_properties_typeProperties_scope')]"
