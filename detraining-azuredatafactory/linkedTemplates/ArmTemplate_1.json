@@ -1455,6 +1455,77 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/dataflow_newbranch')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference"
+							},
+							"name": "emp"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_dept_ADLS_CSV",
+								"type": "DatasetReference"
+							},
+							"name": "dept"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText2",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "join1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          eid as short,",
+						"          ename as string,",
+						"          sal as integer,",
+						"          deptid as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> emp",
+						"source(output(",
+						"          deptid as short,",
+						"          deptname as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> dept",
+						"emp, dept join(emp@deptid == dept@deptid,",
+						"     joinType:'left',",
+						"     broadcast: 'auto')~> join1",
+						"join1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DelimitedText2')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_execute_dataflows')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1547,219 +1618,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/pl_delete')]",
 				"[concat(variables('factoryId'), '/pipelines/pl_copy_customer_data')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_multiple_databases')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "FetchAllTableNames",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureMySqlSource",
-								"queryTimeout": "02:00:00"
-							},
-							"dataset": {
-								"referenceName": "DS_AzureMySqlTable1",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "ForEach1",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "FetchAllTableNames",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('FetchAllTableNames').output.value",
-								"type": "Expression"
-							},
-							"activities": [
-								{
-									"name": "Switch1",
-									"type": "Switch",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"on": {
-											"value": "@item().source_database",
-											"type": "Expression"
-										},
-										"cases": [
-											{
-												"value": "customerdb",
-												"activities": [
-													{
-														"name": "Copy data1",
-														"type": "Copy",
-														"dependsOn": [],
-														"policy": {
-															"timeout": "7.00:00:00",
-															"retry": 0,
-															"retryIntervalInSeconds": 30,
-															"secureOutput": false,
-															"secureInput": false
-														},
-														"userProperties": [],
-														"typeProperties": {
-															"source": {
-																"type": "AzureSqlSource",
-																"queryTimeout": "02:00:00",
-																"partitionOption": "None"
-															},
-															"sink": {
-																"type": "DelimitedTextSink",
-																"storeSettings": {
-																	"type": "AzureBlobStorageWriteSettings"
-																},
-																"formatSettings": {
-																	"type": "DelimitedTextWriteSettings",
-																	"quoteAllText": true,
-																	"fileExtension": ".txt"
-																}
-															},
-															"enableStaging": false,
-															"translator": {
-																"type": "TabularTranslator",
-																"typeConversion": true,
-																"typeConversionSettings": {
-																	"allowDataTruncation": true,
-																	"treatBooleanAsNumber": false
-																}
-															}
-														},
-														"inputs": [
-															{
-																"referenceName": "DS_AzureSqlTable1_Param",
-																"type": "DatasetReference",
-																"parameters": {
-																	"table_schema": {
-																		"value": "@item().table_schema",
-																		"type": "Expression"
-																	},
-																	"table_name": "@item().table_name"
-																}
-															}
-														],
-														"outputs": [
-															{
-																"referenceName": "DelimitedText_Param",
-																"type": "DatasetReference",
-																"parameters": {
-																	"table_schema": "@item().table_schema",
-																	"table_name": "@item().table_name"
-																}
-															}
-														]
-													}
-												]
-											},
-											{
-												"value": "productdb",
-												"activities": [
-													{
-														"name": "Copy data1_copy1",
-														"type": "Copy",
-														"dependsOn": [],
-														"policy": {
-															"timeout": "7.00:00:00",
-															"retry": 0,
-															"retryIntervalInSeconds": 30,
-															"secureOutput": false,
-															"secureInput": false
-														},
-														"userProperties": [],
-														"typeProperties": {
-															"source": {
-																"type": "AzureSqlSource",
-																"queryTimeout": "02:00:00",
-																"partitionOption": "None"
-															},
-															"sink": {
-																"type": "DelimitedTextSink",
-																"storeSettings": {
-																	"type": "AzureBlobStorageWriteSettings"
-																},
-																"formatSettings": {
-																	"type": "DelimitedTextWriteSettings",
-																	"quoteAllText": true,
-																	"fileExtension": ".txt"
-																}
-															},
-															"enableStaging": false,
-															"translator": {
-																"type": "TabularTranslator",
-																"typeConversion": true,
-																"typeConversionSettings": {
-																	"allowDataTruncation": true,
-																	"treatBooleanAsNumber": false
-																}
-															}
-														},
-														"inputs": [
-															{
-																"referenceName": "DS_AzureSqlTable2_Param",
-																"type": "DatasetReference",
-																"parameters": {
-																	"table_schema": "@item().table_schema",
-																	"table_name": "@item().table_name"
-																}
-															}
-														],
-														"outputs": [
-															{
-																"referenceName": "DelimitedText_Param",
-																"type": "DatasetReference",
-																"parameters": {
-																	"table_schema": "@item().table_schema",
-																	"table_name": "@item().table_name"
-																}
-															}
-														]
-													}
-												]
-											}
-										]
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2022-04-14T03:25:42Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_AzureMySqlTable1')]",
-				"[concat(variables('factoryId'), '/datasets/DelimitedText_Param')]",
-				"[concat(variables('factoryId'), '/datasets/DS_AzureSqlTable2_Param')]"
 			]
 		}
 	]
