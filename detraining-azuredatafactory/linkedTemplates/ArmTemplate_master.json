@@ -79,9 +79,6 @@
 					"LS_AzureSqlDatabase_connectionString": {
 						"value": "[parameters('LS_AzureSqlDatabase_connectionString')]"
 					},
-					"LS_AzureMySql1_connectionString": {
-						"value": "[parameters('LS_AzureMySql1_connectionString')]"
-					},
 					"LS_AzureDataLakeStorage_properties_typeProperties_url": {
 						"value": "[parameters('LS_AzureDataLakeStorage_properties_typeProperties_url')]"
 					},
@@ -106,11 +103,34 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"LS_AzureMySql1_connectionString": {
+						"value": "[parameters('LS_AzureMySql1_connectionString')]"
+					},
 					"LS_AzureSqlDatabase2_connectionString": {
 						"value": "[parameters('LS_AzureSqlDatabase2_connectionString')]"
 					},
 					"trigger1_properties_typeProperties_scope": {
 						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'detraining-azuredatafactory_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "detraining-azuredatafactory_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
 					},
 					"trigger3_properties_typeProperties_scope": {
 						"value": "[parameters('trigger3_properties_typeProperties_scope')]"
@@ -118,7 +138,7 @@
 				}
 			},
 			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'detraining-azuredatafactory_ArmTemplate_0')]"
+				"[resourceId('Microsoft.Resources/deployments', 'detraining-azuredatafactory_ArmTemplate_1')]"
 			]
 		}
 	]
