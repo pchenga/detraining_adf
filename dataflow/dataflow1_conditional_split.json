@@ -33,12 +33,6 @@
 					"name": "join1"
 				},
 				{
-					"name": "select1"
-				},
-				{
-					"name": "derivedColumn1"
-				},
-				{
 					"name": "split1"
 				},
 				{
@@ -65,20 +59,12 @@
 				"emp, dept join(emp@deptid == dept@deptid,",
 				"     joinType:'left',",
 				"     broadcast: 'auto')~> join1",
-				"union1 select(mapColumn(",
-				"          ename,",
-				"          sal,",
-				"          deptname",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 derive(Country = 'India') ~> derivedColumn1",
 				"join1 split(equals(emp@deptid, 101),",
 				"     equals(emp@deptid, 102),",
 				"     equals(emp@deptid, 103),",
 				"     disjoint: false) ~> split1@(dept101, dept102, dept103, others)",
 				"split1@dept101, split1@dept102, split1@dept103, split1@others union(byName: true)~> union1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"union1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
 				"     preCommands: [],",
