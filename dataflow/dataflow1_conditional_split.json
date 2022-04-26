@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1_copy1",
+	"name": "dataflow1_conditional_split",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -40,6 +40,9 @@
 				},
 				{
 					"name": "split1"
+				},
+				{
+					"name": "union1"
 				}
 			],
 			"scriptLines": [
@@ -62,7 +65,7 @@
 				"emp, dept join(emp@deptid == dept@deptid,",
 				"     joinType:'left',",
 				"     broadcast: 'auto')~> join1",
-				"split1@dept101 select(mapColumn(",
+				"union1 select(mapColumn(",
 				"          ename,",
 				"          sal,",
 				"          deptname",
@@ -70,8 +73,11 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"select1 derive(Country = 'India') ~> derivedColumn1",
-				"join1 split(equals(dept@deptid, 101),",
-				"     disjoint: false) ~> split1@(dept101, others)",
+				"join1 split(equals(emp@deptid, 101),",
+				"     equals(emp@deptid, 102),",
+				"     equals(emp@deptid, 103),",
+				"     disjoint: false) ~> split1@(dept101, dept102, dept103, others)",
+				"split1@dept101, split1@dept102, split1@dept103, split1@others union(byName: true)~> union1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
