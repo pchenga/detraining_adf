@@ -1,5 +1,5 @@
 {
-	"name": "dataflow_newbranch",
+	"name": "dataflow1_copy1",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -26,13 +26,6 @@
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
-				},
-				{
-					"dataset": {
-						"referenceName": "DS_ADLS_CSV_Output",
-						"type": "DatasetReference"
-					},
-					"name": "sink2"
 				}
 			],
 			"transformations": [
@@ -40,7 +33,13 @@
 					"name": "join1"
 				},
 				{
-					"name": "filter1"
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "split1"
 				}
 			],
 			"scriptLines": [
@@ -63,21 +62,23 @@
 				"emp, dept join(emp@deptid == dept@deptid,",
 				"     joinType:'left',",
 				"     broadcast: 'auto')~> join1",
-				"join1 filter(sal > 5000) ~> filter1",
-				"join1 sink(allowSchemaDrift: true,",
+				"split1@dept101 select(mapColumn(",
+				"          ename,",
+				"          sal,",
+				"          deptname",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 derive(Country = 'India') ~> derivedColumn1",
+				"join1 split(equals(dept@deptid, 101),",
+				"     disjoint: false) ~> split1@(dept101, others)",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1",
-				"filter1 sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     umask: 0022,",
-				"     preCommands: [],",
-				"     postCommands: [],",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink2"
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
